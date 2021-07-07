@@ -1,0 +1,11 @@
+#nonk8s
+apiVersion: skaffold/v2beta18
+kind: Config
+build:
+  artifacts:
+    - image: webserver
+      context: src/webserver
+deploy:
+  kubectl:
+    manifests:
+      - "src/manifests/"

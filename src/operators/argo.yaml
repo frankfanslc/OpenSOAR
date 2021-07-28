@@ -502,10 +502,10 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: argo-server-cluster-role
+  name: argo-backend-cluster-role
 subjects:
   - kind: ServiceAccount
-    name: argo-server
+    name: argo-backend
     namespace: argo
 ---
 apiVersion: v1
@@ -553,9 +553,9 @@ spec:
     spec:
       containers:
         - args:
-            - server
+            - backend
           image: argoproj/argocli:v3.0.3
-          name: argo-server
+          name: argo-backend
           ports:
             - containerPort: 2746
               name: web
@@ -577,7 +577,7 @@ spec:
         kubernetes.io/os: linux
       securityContext:
         runAsNonRoot: true
-      serviceAccountName: argo-server
+      serviceAccountName: argo-backend
       volumes:
         - emptyDir: {}
           name: tmp

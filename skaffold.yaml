@@ -1,0 +1,22 @@
+#nonk8s
+apiVersion: skaffold/v2beta18
+kind: Config
+metadata:
+  name: opensoar
+build:
+  artifacts:
+  - image: webserver-backend
+    context: src/webserver/backend
+    docker:
+      dockerfile: Dockerfile
+  - image: webserver-frontend
+    context: src/webserver/frontend
+    docker:
+      dockerfile: Dockerfile
+deploy:
+  kubectl:
+    manifests:
+    - src/webserver/k8s.yaml
+    - src/webserver/backend/k8s.yaml
+    - src/webserver/frontend/k8s.yaml
+    - src/webserver/database/postgres*.yaml

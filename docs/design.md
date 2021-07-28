@@ -1,4 +1,4 @@
-      # soar components
+# soar components
 - ui for analysis
     - dashboard for reviewing alerts
     - commandline for executing actions
@@ -14,7 +14,7 @@
 ## web app
 - vue app run on nginx
     - https://cli.vuejs.org/guide/deployment.html#docker-nginx
-- flask app for middleware
+- fastapi app for middleware
 - postgres database
 
 ## indexed search?

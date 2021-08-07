@@ -1,5 +1,5 @@
-#nonk8s
-apiVersion: skaffold/v2beta18
+# nonk8s
+apiVersion: skaffold/v2beta19
 kind: Config
 metadata:
   name: opensoar
@@ -9,6 +9,7 @@ build:
     context: src/webserver/backend
     docker:
       dockerfile: Dockerfile
+
   - image: webserver-frontend
     context: src/webserver/frontend
     docker:

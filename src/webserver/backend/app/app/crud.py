@@ -27,6 +27,10 @@ def get_incidents(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Incident).offset(skip).limit(limit).all()
 
 
+def get_user_incidents(db: Session, user_id: int, skip: int = 0, limit: int = 100):
+    return db.query(models.Incident).filter(models.Incident.owner_id == user_id).offset(skip).limit(limit).all()
+
+
 def create_user_incident(db: Session, incident: schemas.IncidentCreate, user_id: int):
     db_incident = models.Incident(**incident.dict(), owner_id=user_id)
     db.add(db_incident)

@@ -1,10 +1,6 @@
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import BaseModel
-from fastapi_users import models
-from fastapi_users.db import SQLAlchemyUserDatabase
-from .models import User as UserTable
-from .database import database
 
 
 class IncidentBase(BaseModel):
@@ -24,37 +20,18 @@ class Incident(IncidentBase):
         orm_mode = True
 
 
-# class UserBase(BaseModel):
-#     email: str
-#
-#
-# class UserCreate(UserBase):
-#     password: str
-#
-#
-# class User(UserBase):
-#     id: int
-#     is_active: bool
-#     incidents: List[Incident] = []
-#
-#     class Config:
-#         orm_mode = True
-
-class User(models.BaseUser):
-    pass
+class UserBase(BaseModel):
+    email: str
 
 
-class UserCreate(models.BaseUserCreate):
-    pass
+class UserCreate(UserBase):
+    password: str
 
 
-class UserUpdate(User, models.BaseUserUpdate):
-    pass
+class User(UserBase):
+    id: int
+    is_active: bool
+    incidents: List[Incident] = []
 
-
-class UserDB(User, models.BaseUserDB):
-    pass
-
-
-users = UserTable.__table__
-user_db = SQLAlchemyUserDatabase(UserDB, database, users)
+    class Config:
+        orm_mode = True

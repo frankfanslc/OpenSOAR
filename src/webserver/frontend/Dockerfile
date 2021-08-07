@@ -17,6 +17,6 @@ FROM nginx:1.21
 
 RUN mkdir /app
 
-COPY --from=build-stage /app/dist /app
+COPY --from=build-stage /app/public /app
 
 COPY nginx.conf /etc/nginx/nginx.conf

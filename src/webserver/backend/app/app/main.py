@@ -4,7 +4,7 @@ from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
 
 from . import crud, schemas
-from .database import SessionLocal, database
+from .database import SessionLocal
 
 app = FastAPI(root_path="/api")
 
@@ -17,19 +17,15 @@ def get_db():
         db.close()
 
 
-@app.on_event("startup")
-async def startup():
-    await database.connect()
-
-
-@app.on_event("shutdown")
-async def shutdown():
-    await database.disconnect()
-
-
-@app.get('/')
+@app.get("/")
 def read_root():
     return {}
+
+
+@app.get("/users", response_model=List[schemas.User])
+def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    users = crud.get_users(db, skip=skip, limit=limit)
+    return users
 
 
 @app.post("/users", response_model=schemas.User, status_code=201)
@@ -40,12 +36,6 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     return crud.create_user(db=db, user=user)
 
 
-@app.get("/users", response_model=List[schemas.User])
-def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    users = crud.get_users(db, skip=skip, limit=limit)
-    return users
-
-
 @app.get("/users/{user_id}", response_model=schemas.User)
 def read_user(user_id: int, db: Session = Depends(get_db)):
     db_user = crud.get_user(db, user_id=user_id)
@@ -54,7 +44,18 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
     return db_user
 
 
-@app.post("/users/{user_id}/incidents", response_model=schemas.Incident, status_code=201)
+@app.get(
+    "/users/{user_id}/incidents", response_model=List[schemas.Incident], status_code=201
+)
+def get_incidents_by_user(
+    user_id: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
+):
+    return crud.get_user_incidents(db=db, user_id=user_id, skip=skip, limit=limit)
+
+
+@app.post(
+    "/users/{user_id}/incidents", response_model=schemas.Incident, status_code=201
+)
 def create_incidents_for_user(
     user_id: int, incident: schemas.IncidentCreate, db: Session = Depends(get_db)
 ):

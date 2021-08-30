@@ -10,7 +10,8 @@ spec:
     app: webserver-frontend
   ports:
   - port: 80
-    targetPort: 80
+    targetPort: 3000
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -31,4 +32,4 @@ spec:
         - name: webserver-frontend
           image: webserver-frontend
           ports:
-            - containerPort: 80
+            - containerPort: 3000

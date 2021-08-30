@@ -1,10 +1,32 @@
-from typing import List
+from typing import List, Dict, Union
 
-from fastapi import Depends, FastAPI, HTTPException
+from sse_starlette.sse import EventSourceResponse
+from fastapi import Depends, FastAPI, HTTPException, Request
+from fastapi_users import FastAPIUsers
+from fastapi_users.authentication import JWTAuthentication, CookieAuthentication
 from sqlalchemy.orm import Session
 
 from . import crud, schemas
 from .database import SessionLocal
+from .adapter import SQLAlchemyORMUserDatabase
+from .schemas import User, UserCreate, UserUpdate, UserDB
+from .utils import incident_event_generator
+
+db_session = SessionLocal()
+user_db = SQLAlchemyORMUserDatabase(UserDB, db_session)
+SECRET = "OpenSOAR@11042018"
+auth_backends = []
+jwt_authentication = JWTAuthentication(secret=SECRET, lifetime_seconds=3600, tokenUrl='auth/jwt/login')
+auth_backends.append(jwt_authentication)
+
+fastapi_users = FastAPIUsers(
+    user_db,
+    auth_backends,
+    User,
+    UserCreate,
+    UserUpdate,
+    UserDB,
+)
 
 app = FastAPI(root_path="/api")
 
@@ -22,47 +44,34 @@ def read_root():
     return {}
 
 
-@app.get("/users", response_model=List[schemas.User])
-def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    users = crud.get_users(db, skip=skip, limit=limit)
-    return users
-
-
-@app.post("/users", response_model=schemas.User, status_code=201)
-def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    db_user = crud.get_user_by_email(db, email=user.email)
-    if db_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
-    return crud.create_user(db=db, user=user)
-
-
-@app.get("/users/{user_id}", response_model=schemas.User)
-def read_user(user_id: int, db: Session = Depends(get_db)):
-    db_user = crud.get_user(db, user_id=user_id)
-    if db_user is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    return db_user
-
-
-@app.get(
-    "/users/{user_id}/incidents", response_model=List[schemas.Incident], status_code=201
+app.include_router(
+    fastapi_users.get_auth_router(jwt_authentication),
+    prefix="/auth/jwt",
+    tags=["auth"]
 )
-def get_incidents_by_user(
-    user_id: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
-):
-    return crud.get_user_incidents(db=db, user_id=user_id, skip=skip, limit=limit)
-
-
-@app.post(
-    "/users/{user_id}/incidents", response_model=schemas.Incident, status_code=201
+app.include_router(
+    fastapi_users.get_register_router(),
+    prefix="/auth",
+    tags=["auth"],
 )
-def create_incidents_for_user(
-    user_id: int, incident: schemas.IncidentCreate, db: Session = Depends(get_db)
-):
-    return crud.create_user_incident(db=db, incident=incident, user_id=user_id)
+app.include_router(
+    fastapi_users.get_users_router(),
+    prefix="/users",
+    tags=["users"],
+)
 
 
-@app.get("/incidents", response_model=List[schemas.Incident])
-def read_incidents(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    incidents = crud.get_incidents(db, skip=skip, limit=limit)
-    return incidents
+@app.get("/incidents", response_model=Dict[str, Union[List[schemas.IncidentRead], int]])
+def read_incidents(skip: int = 0, limit: int = 10, query_filter: str = None, db: Session = Depends(get_db)):
+    return crud.get_incidents(db, skip=skip, limit=limit, query_filter=query_filter)
+
+
+@app.post("/incidents", response_model=schemas.Incident)
+def create_incident(incident: schemas.IncidentCreate, db: Session = Depends(get_db)):
+    return crud.create_incident(db, incident)
+
+
+@app.get("/incidents/stream")
+async def read_incidents_from_stream(request: Request, db: Session = Depends(get_db)):
+    incident_generator = incident_event_generator(db, request)
+    return EventSourceResponse(incident_generator)

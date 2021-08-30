@@ -1,27 +1,28 @@
 # soar components
-- ui for analysis
+- ui for analysis (customizable)
     - dashboard for reviewing alerts
     - commandline for executing actions
         - with or without context of an alert
     - war room for collaboration/workspace
-- script editor
-- playbook editor
+- ~~script editor~~ git integration
+- workflows and editor
 - integrations
+    - plugin framework?
     - alert sources
     - api actions
-- event management (orchestration)
+- incident/event management
+- threat intel
 
 ## web app
-- vue app run on nginx
-    - https://cli.vuejs.org/guide/deployment.html#docker-nginx
-- fastapi app for middleware
+- svelte kit run on node
+- fastapi app for api
 - postgres database
 
 ## indexed search?
 - elasticsearch probably
 
 ## object storage
-- minio
+- minio, maybe
 
 ## workflow executor
 - argo

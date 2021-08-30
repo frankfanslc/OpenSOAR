@@ -8,3 +8,7 @@ node_modules
 dist
 dist-ssr
 *.local
+/src/webserver/frontend/public/build/
+build
+package
+.svelte-kit

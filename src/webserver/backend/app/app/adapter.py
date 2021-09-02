@@ -1,10 +1,12 @@
-from typing import Type, Optional
+from typing import Type, Optional, TypeVar
 from pydantic import UUID4
 from sqlalchemy.orm import Session
 from . import models
+from . import schemas
 
 from fastapi_users.db.base import BaseUserDatabase
-from fastapi_users.models import UD
+
+UD = TypeVar("UD", bound=schemas.UserDB)
 
 
 class NotSetOAuthAccountTableError(Exception):
@@ -30,10 +32,12 @@ class SQLAlchemyORMUserDatabase(BaseUserDatabase[UD]):
         self.oauth_accounts = oauth_accounts
 
     async def get(self, user_id: UUID4) -> Optional[UD]:
-        return self.database.query(models.User).filter(models.User.id == user_id).first()
+        user = self.database.query(models.User).filter(models.User.id == user_id).first()
+        return schemas.UserDB(**user.__dict__) if user else None
 
     async def get_by_email(self, email: str) -> Optional[UD]:
-        return self.database.query(models.User).filter(models.User.email == email).first()
+        user = self.database.query(models.User).filter(models.User.email == email).first()
+        return schemas.UserDB(**user.__dict__) if user else None
 
     async def get_by_oauth_account(self, oauth: str, account_id: str) -> Optional[UD]:
         if self.oauth_accounts is not None:
@@ -51,7 +55,6 @@ class SQLAlchemyORMUserDatabase(BaseUserDatabase[UD]):
 
         self.database.add(db_user)
         self.database.commit()
-        self.database.refresh(db_user)
         return user
 
     async def update(self, user: UD) -> UD:
@@ -59,12 +62,10 @@ class SQLAlchemyORMUserDatabase(BaseUserDatabase[UD]):
         db_user = models.User(**user_dict)
         self.database.merge(db_user)
         self.database.commit()
-        self.database.refresh(db_user)
         return user
 
     async def delete(self, user: UD) -> None:
         user_dict = user.dict()
-        db_user = models.User(**user_dict)
+        db_user = self.database.query(models.User).filter(models.User.id == user_dict["id"]).first()
         self.database.delete(db_user)
         self.database.commit()
-        self.database.refresh(db_user)

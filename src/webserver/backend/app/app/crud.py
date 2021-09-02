@@ -43,3 +43,11 @@ def create_incident(db: Session, incident: schemas.IncidentCreate):
     db.refresh(db_incident)
     return
 
+
+def read_users(db):
+    return db.query(models.User).all()
+
+
+# def modify_user(user_id, values, db):
+#     db.update(models.User).where(models.User.id == user_id).values(**values)
+#     return

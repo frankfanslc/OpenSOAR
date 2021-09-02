@@ -56,4 +56,10 @@
     </nav>
 {/if}
 
-<slot></slot>
+<section class="is-fullheight">
+    <div class="hero-body">
+        <div class="container">
+            <slot></slot>
+        </div>
+    </div>
+</section>

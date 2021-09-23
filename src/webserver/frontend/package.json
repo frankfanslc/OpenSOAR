@@ -8,14 +8,16 @@
   },
   "devDependencies": {
     "@sveltejs/kit": "next",
+    "bulma": "^0.9.3",
     "form-data": "^4.0.0",
+    "node-sass": "^6.0.1",
     "sass": "^1.38.0",
     "svelte": "^3.34.0"
   },
   "type": "module",
   "dependencies": {
     "@sveltejs/adapter-node": "next",
-    "bulma": "^0.9.3",
+    "bulmaswatch": "^0.8.1",
     "cookie": "^0.4.1"
   }
 }

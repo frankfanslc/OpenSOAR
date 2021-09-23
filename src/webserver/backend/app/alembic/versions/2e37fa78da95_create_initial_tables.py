@@ -35,7 +35,10 @@ def upgrade():
         sa.Column("status", sa.String, index=True),
         sa.Column("description", sa.String, index=True),
         sa.Column("owner_id", UUID(as_uuid=True), sa.ForeignKey("users.id")),
-        sa.ForeignKeyConstraint(("owner_id",), ["users.id"],)
+        sa.ForeignKeyConstraint(
+            ("owner_id",),
+            ["users.id"],
+        ),
     )
 
 

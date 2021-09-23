@@ -27,6 +27,7 @@ spec:
       labels:
         app: webserver-backend
     spec:
+      serviceAccountName: fastapi
       containers:
         - name: webserver-backend
           image: webserver-backend
@@ -44,3 +45,34 @@ spec:
               value: postgres.default.svc.cluster.local
             - name: POSTGRES_DB
               value: opensoar
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: fastapi
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: fastapi-admin-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: argo-aggregate-to-admin
+subjects:
+- kind: ServiceAccount
+  name: fastapi
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: fastapi-cluster-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: argo-server-cluster-role
+subjects:
+- kind: ServiceAccount
+  name: fastapi
+  namespace: default

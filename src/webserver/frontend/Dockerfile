@@ -8,6 +8,7 @@ RUN npm clean-install
 
 COPY . .
 
+#RUN npm run css-build
 RUN npm run build
 
 FROM node:16

@@ -20,11 +20,11 @@
 </script>
 <script>
     import {session} from '$app/stores';
-
+    import "../global.scss";
 </script>
 
 {#if $session.user}
-    <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
+    <nav class="navbar" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
             <a class="navbar-item" href="/">
                 <img alt="OpenSOAR logo" src="/opensoar_logo.png"/>
@@ -46,7 +46,14 @@
             <div class="navbar-end">
                 <div class="navbar-item">
                     <div class="buttons">
-                        <a href="/logout" class="button is-light">
+                        <a href="/profile">
+                            <i class="fas fa-user"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="navbar-item">
+                    <div class="buttons">
+                        <a href="/logout" class="button">
                             Log out
                         </a>
                     </div>

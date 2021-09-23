@@ -2,36 +2,48 @@ from sqlalchemy.orm import Session, joinedload
 from . import models, schemas
 
 
-def get_incidents(db: Session, skip: int = 0, limit: int = 10, query_filter: str = None):
+def get_incidents(
+    db: Session, skip: int = 0, limit: int = 10, query_filter: str = None
+):
     if query_filter:
-        incidents = db.query(models.Incident) \
-            .filter(query_filter) \
-            .options(joinedload(models.Incident.owner)) \
-            .order_by(models.Incident.id) \
-            .offset(skip) \
-            .limit(limit) \
+        incidents = (
+            db.query(models.Incident)
+            .filter(query_filter)
+            .options(joinedload(models.Incident.owner))
+            .order_by(models.Incident.id)
+            .offset(skip)
+            .limit(limit)
             .all()
+        )
     else:
-        incidents = db.query(models.Incident)\
-            .options(joinedload(models.Incident.owner))\
-            .order_by(models.Incident.id)\
-            .offset(skip)\
-            .limit(limit)\
+        incidents = (
+            db.query(models.Incident)
+            .options(joinedload(models.Incident.owner))
+            .order_by(models.Incident.id)
+            .offset(skip)
+            .limit(limit)
             .all()
-    incidents = [{**incident.__dict__, "owner": incident.owner} for incident in incidents]
+        )
+    incidents = [
+        {**incident.__dict__, "owner": incident.owner} for incident in incidents
+    ]
     total = db.query(models.Incident).count()
     return {"incidents": incidents, "total": total}
 
 
 def get_user_incidents(db: Session, user_id: int, skip: int = 0, limit: int = 10):
-    incidents = db.query(models.Incident) \
-        .filter(models.Incident.owner_id == user_id) \
-        .options(joinedload(models.Incident.owner)) \
-        .order_by(models.Incident.id) \
-        .offset(skip) \
-        .limit(limit) \
+    incidents = (
+        db.query(models.Incident)
+        .filter(models.Incident.owner_id == user_id)
+        .options(joinedload(models.Incident.owner))
+        .order_by(models.Incident.id)
+        .offset(skip)
+        .limit(limit)
         .all()
-    incidents = [{**incident.__dict__, "owner": incident.owner} for incident in incidents]
+    )
+    incidents = [
+        {**incident.__dict__, "owner": incident.owner} for incident in incidents
+    ]
     total = db.query(models.Incident).count()
     return {"incidents": incidents, "total": total}
 

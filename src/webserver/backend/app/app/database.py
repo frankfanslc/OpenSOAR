@@ -15,4 +15,4 @@ engine = create_engine(f"{DATABASE_URL}/{pg_db}")
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-Base: DeclarativeMeta = declarative_base()
+Base = declarative_base()

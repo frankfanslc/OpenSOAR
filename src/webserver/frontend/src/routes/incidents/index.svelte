@@ -87,7 +87,7 @@
             <button class="button is-small" on:click={changeLimit}>50</button>
             <button class="button is-small" on:click={changeLimit}>100</button>
         </div>
-        <table class="table box has-background-light">
+        <table class="table box">
             <thead>
             <tr>
                 <th><input type="checkbox" id="allSelector" on:click={toggleSelectAll}></th>
@@ -116,20 +116,20 @@
         </table>
         <nav class="pagination" role="navigation" aria-label="pagination">
             {#if (currentPage === 0)}
-                <button class="button pagination-previous has-background-white"
+                <button class="button pagination-previous"
                         disabled>Previous
                 </button>
             {:else}
-                <button class="button pagination-previous has-background-white"
+                <button class="button pagination-previous"
                         on:click={changePage}>Previous
                 </button>
             {/if}
             {#if (currentPage === maxPage)}
-                <button class="button pagination-next has-background-white"
+                <button class="button pagination-next"
                         disabled>Next
                 </button>
             {:else}
-                <button class="button pagination-next has-background-white"
+                <button class="button pagination-next"
                         on:click={changePage}>Next
                 </button>
             {/if}
@@ -143,7 +143,7 @@
                         </li>
                     {:else}
                         <li>
-                            <button class="button pagination-link has-background-white"
+                            <button class="button pagination-link"
                                     aria-label="Goto page {page+1}"
                                     on:click={changePage}>{page + 1}</button>
                         </li>

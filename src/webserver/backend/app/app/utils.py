@@ -19,7 +19,7 @@ async def incident_event_generator(db: Session, request: Request):
             yield {
                 "event": "update",
                 "retry": incident_stream_retry_timeout,
-                "data": [dict(incident) for incident in incidents]
+                "data": [dict(incident) for incident in incidents],
             }
             last_incident_id = incidents[-1].id
         await asyncio.sleep(incident_stream_delay)

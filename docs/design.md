@@ -1,4 +1,4 @@
-# soar components
+  # soar components
 - ui for analysis (customizable)
     - dashboard for reviewing alerts
     - commandline for executing actions

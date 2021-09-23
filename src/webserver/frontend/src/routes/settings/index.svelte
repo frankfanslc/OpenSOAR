@@ -126,16 +126,22 @@
     $: adminsSelected = user_data.filter(user => user.is_superuser && selection.includes(user.id)).length
 </script>
 
+<div class="tabs">
+  <ul>
+    <li class="is-active"><a>Users</a></li>
+    <li><a>Server</a></li>
+  </ul>
+</div>
 <div class="columns is-centered">
     <div class="column">
-        <div class="box has-background-light">
+        <div class="box">
             <div class="is-pulled-right columns" style="padding: 1.25em;">
                 <button class="button is-small" on:click={changeLimit}>10</button>
                 <button class="button is-small" on:click={changeLimit}>25</button>
                 <button class="button is-small" on:click={changeLimit}>50</button>
                 <button class="button is-small" on:click={changeLimit}>100</button>
             </div>
-            <table class="table has-background-light">
+            <table class="table">
                 <thead>
                 <tr>
                     <th class="has-text-centered"><input type="checkbox" id="allSelector"
@@ -167,7 +173,7 @@
                 {#if creatingUser}
                     <tr>
                         <td>
-                            <button class="button has-background-light is-normal" style="border-width: 0" on:click={() => creatingUser = false}>
+                            <button class="button is-normal" style="border-width: 0" on:click={() => creatingUser = false}>
                                 <span class="icon has-text-danger">
                                     <i class="fas fa-times-circle"></i>
                                 </span>
@@ -187,7 +193,7 @@
                     </tr>
                 {/if}
                 {#if selection.length === 0 && !creatingUser}
-                    <button class="button has-background-light" style="border-width: 0" on:click={() => creatingUser = true}>
+                    <button class="button" style="border-width: 0" on:click={() => creatingUser = true}>
                         <span class="icon has-text-success">
                             <i class="fas fa-plus-circle"></i>
                         </span>
@@ -209,20 +215,20 @@
         </div>
         <nav class="pagination" role="navigation" aria-label="pagination">
             {#if (currentPage === 0)}
-                <button class="button pagination-previous has-background-white"
+                <button class="button pagination-previous"
                         disabled>Previous
                 </button>
             {:else}
-                <button class="button pagination-previous has-background-white"
+                <button class="button pagination-previous"
                         on:click={changePage}>Previous
                 </button>
             {/if}
             {#if (currentPage === maxPage)}
-                <button class="button pagination-next has-background-white"
+                <button class="button pagination-next"
                         disabled>Next
                 </button>
             {:else}
-                <button class="button pagination-next has-background-white"
+                <button class="button pagination-next"
                         on:click={changePage}>Next
                 </button>
             {/if}
@@ -236,7 +242,7 @@
                         </li>
                     {:else}
                         <li>
-                            <button class="button pagination-link has-background-white"
+                            <button class="button pagination-link"
                                     aria-label="Goto page {page+1}"
                                     on:click={changePage}>{page + 1}</button>
                         </li>

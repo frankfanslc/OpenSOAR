@@ -1,5 +1,6 @@
 /** @type {import('@sveltejs/kit').Config} */
 import node from '@sveltejs/adapter-node';
+import {preprocess} from "svelte/compiler";
 
 const config = {
 	kit: {

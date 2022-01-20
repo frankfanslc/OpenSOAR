@@ -1,6 +1,7 @@
 from typing import Type, Optional, TypeVar
 from pydantic import UUID4
 from sqlalchemy.orm import Session
+from sqlalchemy.engine import Result
 from . import models
 from . import schemas
 
@@ -30,14 +31,18 @@ class SQLAlchemyORMUserDatabase(BaseUserDatabase[UD]):
         self.oauth_accounts = oauth_accounts
 
     async def get(self, user_id: UUID4) -> Optional[UD]:
-        user = (
-            self.database.query(models.User).filter(models.User.id == user_id).first()
+        user: Result = (
+            self.database.query(models.UserTable)
+            .filter(models.UserTable.id == user_id)
+            .first()
         )
         return schemas.UserDB(**user.__dict__) if user else None
 
     async def get_by_email(self, email: str) -> Optional[UD]:
         user = (
-            self.database.query(models.User).filter(models.User.email == email).first()
+            self.database.query(models.UserTable)
+            .filter(models.UserTable.email == email)
+            .first()
         )
         return schemas.UserDB(**user.__dict__) if user else None
 
@@ -48,9 +53,9 @@ class SQLAlchemyORMUserDatabase(BaseUserDatabase[UD]):
 
     async def create(self, user: UD) -> UD:
         user_dict = user.dict(exclude_none=True)
-        db_user = models.User(**user_dict)
+        db_user = models.UserTable(**user_dict)
 
-        number_of_users = self.database.query(models.User).count()
+        number_of_users = self.database.query(models.UserTable).count()
         if number_of_users == 0:
             db_user.is_superuser = True
             user.is_superuser = True
@@ -61,7 +66,7 @@ class SQLAlchemyORMUserDatabase(BaseUserDatabase[UD]):
 
     async def update(self, user: UD) -> UD:
         user_dict = user.dict(exclude_none=True)
-        db_user = models.User(**user_dict)
+        db_user = models.UserTable(**user_dict)
         self.database.merge(db_user)
         self.database.commit()
         return user
@@ -69,8 +74,8 @@ class SQLAlchemyORMUserDatabase(BaseUserDatabase[UD]):
     async def delete(self, user: UD) -> None:
         user_dict = user.dict(exclude_none=True)
         db_user = (
-            self.database.query(models.User)
-            .filter(models.User.id == user_dict["id"])
+            self.database.query(models.UserTable)
+            .filter(models.UserTable.id == user_dict["id"])
             .first()
         )
         self.database.delete(db_user)

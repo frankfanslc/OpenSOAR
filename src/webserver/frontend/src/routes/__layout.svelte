@@ -1,5 +1,5 @@
 <script context="module">
-    const publicPages = ['/', '/login'];
+    const publicPages = ['/', '/login', '/install'];
 
     export async function load({page, session}) {
         const {path} = page;

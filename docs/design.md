@@ -1,4 +1,4 @@
-  # soar components
+# soar components
 - ui for analysis (customizable)
     - dashboard for reviewing alerts
     - commandline for executing actions
@@ -26,3 +26,6 @@
 
 ## workflow executor
 - argo
+
+# update
+need to start decoupling some components. in particular, the database and object storage components, as well as probably the argo deployment. first this will simplify the amount of development that has to be done because a smooth deployment onto a k8s cluster won't include some of these complicated setups (e.g. postgres) when in production there are likely better options (operators or cloud-native services like RDS). second, it will allow for more general component integration such as generic relational database support (postgres, mysql, maria, oracle, etc.) and a s3-compliant object store.

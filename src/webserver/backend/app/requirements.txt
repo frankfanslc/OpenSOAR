@@ -1,13 +1,13 @@
-sqlalchemy==1.4.24
-psycopg2-binary==2.9.1
-fastapi-users[sqlalchemy]==8.1.0
-alembic==1.7.3
-tenacity==8.0.1
-sse-starlette==0.7.2
-pydantic-sqlalchemy==0.0.9
-argo-workflows==5.0.0
-python-dateutil==2.8.2
-certifi==2021.5.30
-urllib3==1.26.7
-six==1.16.0
-kubernetes==18.20.0
+sqlalchemy==1.4.29
+psycopg2-binary==2.9.3
+fastapi-users[sqlalchemy2]==9.2.2
+# tenacity==8.0.1
+sse-starlette==0.10.0
+# anyio==3.5.0
+# pydantic-sqlalchemy==0.0.9
+# git+https://github.com/argoproj/argo-workflows@master#subdirectory=sdks/python/client
+# python-dateutil==2.8.2
+# certifi==2021.10.8
+# urllib3==1.26.8
+# six==1.16.0
+# kubernetes==21.7.0

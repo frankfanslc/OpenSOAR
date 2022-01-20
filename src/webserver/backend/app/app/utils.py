@@ -1,6 +1,6 @@
 import asyncio
 
-from fastapi import Request
+from fastapi import FastAPI, Request
 from sqlalchemy.orm import Session
 
 from .crud import get_incidents
@@ -23,3 +23,10 @@ async def incident_event_generator(db: Session, request: Request):
             }
             last_incident_id = incidents[-1].id
         await asyncio.sleep(incident_stream_delay)
+
+
+class OSoarApp(FastAPI):
+    def __init__(self, engine=None, session_maker=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.engine = engine
+        self.session_maker = session_maker

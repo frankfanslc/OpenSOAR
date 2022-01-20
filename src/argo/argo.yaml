@@ -1,5 +1,4 @@
 # This is an auto-generated file. DO NOT EDIT
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
@@ -168,6 +167,46 @@ spec:
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
+  name: workflowtasksets.argoproj.io
+spec:
+  group: argoproj.io
+  names:
+    kind: WorkflowTaskSet
+    listKind: WorkflowTaskSetList
+    plural: workflowtasksets
+    shortNames:
+    - wfts
+    singular: workflowtaskset
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        properties:
+          apiVersion:
+            type: string
+          kind:
+            type: string
+          metadata:
+            type: object
+          spec:
+            type: object
+            x-kubernetes-map-type: atomic
+            x-kubernetes-preserve-unknown-fields: true
+          status:
+            type: object
+            x-kubernetes-map-type: atomic
+            x-kubernetes-preserve-unknown-fields: true
+        required:
+        - metadata
+        - spec
+        type: object
+    served: true
+    storage: true
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
   name: workflowtemplates.argoproj.io
 spec:
   group: argoproj.io
@@ -251,6 +290,8 @@ rules:
   - cronworkflows/finalizers
   - clusterworkflowtemplates
   - clusterworkflowtemplates/finalizers
+  - workflowtasksets
+  - workflowtasksets/finalizers
   verbs:
   - create
   - delete
@@ -355,6 +396,8 @@ rules:
   resources:
   - workflows
   - workflows/finalizers
+  - workflowtasksets
+  - workflowtasksets/finalizers
   verbs:
   - get
   - list
@@ -538,9 +581,9 @@ metadata:
 spec:
   ports:
   - name: metrics
-    port: 9091
+    port: 9090
     protocol: TCP
-    targetPort: 9091
+    targetPort: 9090
   selector:
     app: workflow-controller
 ---
@@ -560,10 +603,7 @@ spec:
       containers:
       - args:
         - server
-        env:
-            - name: BASE_HREF
-              value: /argo/
-        image: docker.io/argoproj/argocli:v3.1.10
+        image: quay.io/argoproj/argocli:v3.2.6
         name: argo-server
         ports:
         - containerPort: 2746
@@ -609,7 +649,7 @@ spec:
         - --configmap
         - workflow-controller-configmap
         - --executor-image
-        - argoproj/argoexec:v3.1.10
+        - quay.io/argoproj/argoexec:v3.2.6
         command:
         - workflow-controller
         env:
@@ -618,7 +658,7 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: metadata.name
-        image: docker.io/argoproj/workflow-controller:v3.1.10
+        image: quay.io/argoproj/workflow-controller:v3.2.6
         livenessProbe:
           failureThreshold: 3
           httpGet:

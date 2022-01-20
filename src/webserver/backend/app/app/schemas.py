@@ -27,6 +27,7 @@ class User(models.BaseUser):
     # is_verified: Optional[bool] = False
     incidents: Optional[List[Incident]]
     display_name: Optional[str]
+    email: EmailStr
 
     class Config:
         orm_mode = True
@@ -73,3 +74,19 @@ class UserDB(User, models.BaseUserDB):
     # incidents: Optional[List[Incident]]
     # display_name: Optional[str]
     pass
+
+
+class SettingBase(BaseModel):
+    setting: str
+    value: str
+
+
+class SettingCreate(SettingBase):
+    pass
+
+
+class Setting(SettingBase):
+    id: str
+
+    class Config:
+        orm_mode = True

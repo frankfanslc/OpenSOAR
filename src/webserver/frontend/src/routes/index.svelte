@@ -3,8 +3,23 @@
     import {browser} from '$app/env';
     import {goto} from "$app/navigation";
 
-    if (browser && $session.jwt) {
-        goto('/incidents');
+    if (browser) {
+        if ($session.jwt) {
+            goto('/incidents');
+        }
+        fetch('/install/status', {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+            .then(r => r.json())
+            .then(d => {
+                if (!d.status) {
+                    goto("/install")
+                }
+            });
     }
 
     let badLogin = false;
@@ -37,23 +52,16 @@
                 <div class="column is-5-tablet is-4-desktop is-3-widescreen">
                     <form on:submit|preventDefault={submit}>
                         <div class="field">
-                            <label for="username" class="label">Email</label>
-                            <div class="control has-icons-left">
-                                <input type="email" placeholder="e.g. bobsmith@gmail.com"
-                                       id="username" class="input" name="username" required>
-                                <span class="icon is-small is-left">
-                                    <i class="fa fa-envelope"></i>
-                                </span>
+                            <label for="email" class="label">Email</label>
+                            <div class="control">
+                                <input type="text"
+                                       id="email" class="input" name="email" required>
                             </div>
                         </div>
                         <div class="field">
                             <label for="password" class="label">Password</label>
-                            <div class="control has-icons-left">
-                                <input type="password" placeholder="*******" id="password"
-                                       class="input" name="password" required>
-                                <span class="icon is-small is-left">
-                                    <i class="fa fa-lock"></i>
-                                </span>
+                            <div class="control">
+                                <input type="password" id="password" class="input" name="password" required>
                             </div>
                         </div>
                         {#if badLogin}

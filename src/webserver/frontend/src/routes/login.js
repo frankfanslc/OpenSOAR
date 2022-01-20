@@ -7,7 +7,7 @@ export async function post(request) {
             method: 'POST',
             credentials: 'include',
             headers: headers,
-            body: `username=${encodeURIComponent(credentials.username)}&password=${encodeURIComponent(credentials.password)}`
+            body: `username=${encodeURIComponent(credentials.email)}&password=${encodeURIComponent(credentials.password)}`
         }).then((r) => r.json());
         if (!body.access_token) {
             return {status: 400, body};

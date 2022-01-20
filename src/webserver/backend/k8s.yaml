@@ -35,16 +35,15 @@ spec:
             - containerPort: 80
           env:
             - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  key: SECRET
-                  name: postgres-secret
+              value: postgres123
             - name: POSTGRES_USER
               value: opensoar
             - name: POSTGRES_HOST
-              value: postgres.default.svc.cluster.local
+              value: 192.168.0.90
             - name: POSTGRES_DB
               value: opensoar
+            - name: AUTH_BACKEND_SECRET
+              value: OpenSOAR@11042018
 ---
 apiVersion: v1
 kind: ServiceAccount

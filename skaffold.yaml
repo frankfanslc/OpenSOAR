@@ -1,34 +1,25 @@
-apiVersion: skaffold/v2beta22
+apiVersion: skaffold/v2beta25
 kind: Config
 metadata:
   name: opensoar
 build:
   artifacts:
   - image: webserver-backend
-    context: src/webserver/backend
+    context: src/webserver/backend/
     docker:
       dockerfile: Dockerfile
   - image: webserver-frontend
-    context: src/webserver/frontend
+    context: src/webserver/frontend/
     docker:
       dockerfile: Dockerfile
-  - image: phony
-    custom:
-      buildCommand: src/scripts/bootstrap_crd.sh && echo FROM alpine | docker build
-        -t $IMAGE -
-      dependencies:
-        paths:
-        - src/scripts/bootstrap_crd.sh
-        - src/services/
-        - src/crd/
 deploy:
   kubectl:
+    hooks:
+      before:
+        - host:
+            command: ["sh", "-c", "kubectl apply -f src/argo/argo-ns.yaml --wait=true"]
     manifests:
     - src/k8s.yaml
     - src/webserver/backend/k8s.yaml
     - src/webserver/frontend/k8s.yaml
-    - src/webserver/database/postgres*.yaml
-portForward:
-- resourceType: service
-  resourceName: opensoar-console
-  port: 9090
+#    - src/argo/argo.yaml

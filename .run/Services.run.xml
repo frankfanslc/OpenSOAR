@@ -1,0 +1,17 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Services" type="docker-deploy" factoryName="docker-compose.yml" server-name="Docker">
+    <deployment type="docker-compose.yml">
+      <settings>
+        <option name="composeProjectName" value="opensoar" />
+        <option name="envFilePath" value="" />
+        <option name="secondarySourceFiles">
+          <list>
+            <option value="opt/postgres/docker-compose.yaml" />
+          </list>
+        </option>
+        <option name="sourceFilePath" value="opt/minio/docker-compose.yaml" />
+      </settings>
+    </deployment>
+    <method v="2" />
+  </configuration>
+</component>
